@@ -6,13 +6,13 @@ export async function requireAuth(req: Request) {
     const authHeader = req.headers.get("authorization");
 
     if (!authHeader) {
-        throw new Error("Missing Authorization header");
+        throw {message: "Missing authorization header", status: 400}
     }
 
     const token = authHeader.split(" ")[1];
 
     if (!token) {
-        throw new Error("Missing token");
+        throw { message: "Missing token", status: 400 };
     }
 
     try {
@@ -23,6 +23,6 @@ export async function requireAuth(req: Request) {
             username: payload.username as string,
         };
     } catch {
-        throw new Error("Invalid token");
+        throw { message: "Unauthorized", status: 401 };
     }
 }
