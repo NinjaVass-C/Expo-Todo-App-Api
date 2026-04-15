@@ -14,17 +14,14 @@ export function validateUserBody(body: any) {
 
 export function validateTaskBody(body: any) {
     const errors: ValidationErrors[] = [];
-    if (typeof body?.description !== 'string' && body.description.trim().length > 0) {
+    if (body?.description && typeof body?.description !== 'string' && body.description.trim().length > 0) {
         errors.push({field: "description", message: "Description is empty"});
     }
-    if (typeof body?.is_completed !== 'boolean') {
+    if (body?.is_completed && typeof body?.is_completed !== 'boolean') {
         errors.push({field: "description", message: "Invalid completion status"});
     }
-    if (typeof body?.due_date !== 'number' && body?.due_date <= 0) {
+    if (body?.due_date && typeof body?.due_date !== 'number' && body?.due_date <= 0) {
         errors.push({field: "due_date", message: "Due date is invalid"});
-    }
-    if (typeof body?.id !== 'number' && body?.id <= 0) {
-        errors.push({field: "id", message: "Id is invalid"});
     }
     return errors
 }

@@ -4,14 +4,7 @@ import {ErrorResponse} from "../utils/errorResponse.ts";
 import {validateSingleTask, validateTaskBody} from "../utils/validateRequests.ts";
 
 export async function getAllTasks(req: Request, is_completed: boolean) {
-    let body: any;
-    try {
-        body = await req.json();
-    } catch {
-        body = null;
-    }
-    if (!body) return ErrorResponse("Invalid json body", 400)
-    const isCompleted: boolean = body.is_completed;
+    const isCompleted: boolean = is_completed;
     if (isCompleted === null || isCompleted === undefined) {
         return ErrorResponse("Invalid json body", 400)
     }
@@ -41,21 +34,26 @@ export async function getTaskById(id: number, req: Request) {
 }
 
 export async function createTask(req: Request) {
+    console.log("Creating task")
     let body: any;
     try {
         body = await req.json();
     } catch {
         body = null;
     }
+    console.log(body)
     if (!body) return ErrorResponse("Invalid json body", 400)
     const errors = validateTaskBody(body)
+    console.log(errors)
     if (errors.length > 0) return ErrorResponse("Invalid task creation body", 400)
     try {
         const user = await requireAuth(req)
         const userId = user.userId
         const saved = await taskRepo.create(body.description, body.due_date, userId)
+        console.log("WE SAVE IT", saved)
         return Response.json({data: saved}, {status: 200})
     } catch (error: any) {
+        console.log(error.message)
         return ErrorResponse(error.message || "Server error", error.status || 500)
     }
 }

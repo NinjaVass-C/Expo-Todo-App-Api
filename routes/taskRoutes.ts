@@ -3,8 +3,7 @@ import {createTask, deleteAllTasks, deleteTask, getAllTasks, getTaskById, update
 
 export async function taskRoutes(req: Request) {
     const url = new URL (req.url)
-
-    if (req.method === "GET" && url.pathname === "/tasks/include_completed") {
+    if (req.method === "GET" && url.pathname === "/tasks") {
         const include_completed = url.pathname.split("/")[2] ?? "";
         return await getAllTasks(req, Boolean(include_completed))
     }
@@ -29,6 +28,7 @@ export async function taskRoutes(req: Request) {
     }
 
     if (req.method === "DELETE" && url.pathname === "/tasks") {
+        console.log("In delete")
         return await deleteAllTasks(req)
     }
 
