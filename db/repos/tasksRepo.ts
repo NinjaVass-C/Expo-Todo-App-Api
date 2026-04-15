@@ -3,9 +3,17 @@ import {taskTable} from "../schema.ts";
 import {and, eq} from 'drizzle-orm';
 
 export const taskRepo = {
-    async getAll(userId: number) {
-        return db.select().from(taskTable)
-            .where(eq(taskTable.userId, userId))
+    async getAll(userId: number, includeCompleted: boolean) {
+        const conditions = [eq(taskTable.userId, userId)];
+
+        if (!includeCompleted) {
+            conditions.push(eq(taskTable.is_completed, false));
+        }
+
+        return db
+            .select()
+            .from(taskTable)
+            .where(and(...conditions));
     },
     async getOne(id: number, userId: number) {
         return db.select().from(taskTable)
