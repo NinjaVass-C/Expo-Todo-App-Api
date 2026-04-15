@@ -9,7 +9,8 @@ export const taskRepo = {
     },
     async getOne(id: number, userId: number) {
         return db.select().from(taskTable)
-            .where(and(eq(taskTable.id, id), eq(taskTable.userId, userId))).get()
+            .where(and(eq(taskTable.id, id), eq(taskTable.userId, userId)))
+            .get()
     },
     async create(description: string, dueDate: number, userId: number) {
         console.log(new Date(dueDate));
@@ -24,11 +25,17 @@ export const taskRepo = {
             description,
             is_completed,
             due_date: new Date(dueDate),
-        }).where(and(eq(taskTable.id, id), eq(taskTable.userId, userId))).returning();
+        }).where(and(eq(taskTable.id, id), eq(taskTable.userId, userId)))
+            .returning();
     },
     async delete(id: number, userId: number) {
         return db.delete(taskTable)
-            .where(and(eq(taskTable.id, id), eq(taskTable.userId, userId))).returning();
+            .where(and(eq(taskTable.id, id), eq(taskTable.userId, userId)))
+            .returning();
+    },
+    async deleteAll(userId: number) {
+        return db.delete(taskTable)
+            .where(eq(taskTable.userId, userId)).returning();
     }
 
 }

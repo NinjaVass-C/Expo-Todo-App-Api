@@ -83,3 +83,14 @@ export async function deleteTask(id: number, req: Request) {
         return ErrorResponse(error.message || "Server error", error.status || 500)
     }
 }
+
+export async function deleteAllTasks(req: Request) {
+    try {
+        const user = await requireAuth(req)
+        const userId = user.userId
+        const deleted = await taskRepo.deleteAll(userId)
+        return Response.json({data: deleted}, {status: 200})
+    } catch (error: any) {
+        return ErrorResponse(error.message || "Server error", error.status || 500)
+    }
+}
