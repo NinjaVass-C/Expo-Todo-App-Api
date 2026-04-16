@@ -41,10 +41,8 @@ export async function createTask(req: Request) {
     } catch {
         body = null;
     }
-    console.log(body)
     if (!body) return ErrorResponse("Invalid json body", 400)
     const errors = validateTaskBody(body)
-    console.log(errors)
     if (errors.length > 0) return ErrorResponse("Invalid task creation body", 400)
     try {
         const user = await requireAuth(req)
@@ -66,7 +64,7 @@ export async function updateTask(id: number, req: Request) {
     } catch {
         body = null;
     }
-    if (!body || !body.id) return ErrorResponse("Invalid json body", 400)
+    if (!body) return ErrorResponse("Invalid json body", 400)
     const errors = validateTaskBody(body)
     if (errors.length > 0) {
         return ErrorResponse("Invalid task update body", 400)
@@ -74,7 +72,7 @@ export async function updateTask(id: number, req: Request) {
     try {
         const user = await requireAuth(req)
         const userId = user.userId
-        const updated = await taskRepo.update(body.id, body.description, body.due_date, userId, body.is_completed)
+        const updated = await taskRepo.update(id, body.description, body.due_date, userId, body.is_completed)
         return Response.json({data: updated}, {status: 200})
     } catch (error: any) {
         return ErrorResponse(error.message || "Server error", error.status || 500)

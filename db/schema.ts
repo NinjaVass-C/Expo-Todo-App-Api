@@ -12,7 +12,7 @@ export const usersTable = sqliteTable("users", {
     password: text().notNull(),
     created_at: integer({ mode: "timestamp" })
         .notNull()
-        .default(sql`(strftime('%s','now') * 1000)`)
+        .default(sql`(strftime('%s','now'))`)
 });
 
 export const taskTable = sqliteTable("tasks", {
@@ -27,5 +27,5 @@ export const taskTable = sqliteTable("tasks", {
     due_date: integer({ mode: "timestamp" }),
     created_at: integer({ mode: "timestamp" })
         .notNull()
-        .default(sql`(strftime('%s','now') * 1000)`)
+        .default(sql`(strftime('%s','now'))`)
 });

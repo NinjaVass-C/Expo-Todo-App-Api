@@ -1,7 +1,8 @@
 import {validateUserBody} from "../utils/validateRequests.ts";
 import {ErrorResponse} from "../utils/errorResponse.ts";
 import {userRepo} from "../db/repos/userRepo.ts";
-import { SignJWT } from "jose";
+import {jwtVerify, SignJWT} from "jose";
+import {requireAuth} from "../utils/auth.ts";
 
 
 
@@ -21,7 +22,7 @@ export async function createUser(req: Request) {
     }
     const username: string = body.username.trim()
     const exists = await userRepo.getOne(username)
-    if (exists.length > 0) {
+    if (exists) {
         return ErrorResponse("Username already exists", 409)
     }
     const password: string = body.password.trim()
@@ -30,10 +31,6 @@ export async function createUser(req: Request) {
     await userRepo.create(username, hashedPassword)
     return Response.json({message: "user added"}, {status: 200});
 }
-
-
-
-
 
 export async function login(req: Request) {
     const SECRET = new TextEncoder().encode(process.env.SECRET);
@@ -56,8 +53,7 @@ export async function login(req: Request) {
     const username: string = body.username.trim();
     const password: string = body.password;
 
-    const users = await userRepo.getOne(username);
-    const user = users[0];
+    const user = await userRepo.getOne(username);
 
     if (!user) {
         return ErrorResponse("Invalid username or password", 401)
@@ -78,6 +74,21 @@ export async function login(req: Request) {
         .sign(SECRET);
 
     return Response.json({
-        token,
+        token, username
     }, { status: 200 });
+}
+
+export async function validateToken(req: Request) {
+    try {
+        const user = await requireAuth(req);
+        if (!user) throw new Error("Invalid token");
+        const validUser = await userRepo.getById(user.userId)
+        console.log(validUser)
+        if (!validUser) {
+            throw new Error("Invalid token");
+        }
+        return Response.json({user}, {status: 200});
+    } catch (error: any) {
+        return ErrorResponse(error.message || "Unauthorized", 401);
+    }
 }

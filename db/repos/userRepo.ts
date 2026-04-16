@@ -11,7 +11,13 @@ export const userRepo = {
     },
     async getOne(username: string) {
         return db.select().from(usersTable)
-            .where(eq(usersTable.username, username));
+            .where(eq(usersTable.username, username))
+            .get();
+    },
+    async getById(id: number) {
+        return db.select().from(usersTable)
+            .where(eq(usersTable.id, id))
+            .get()
     }
 
 }

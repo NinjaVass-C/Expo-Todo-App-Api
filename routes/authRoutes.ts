@@ -1,4 +1,4 @@
-import { createUser, login } from "../services/authService.ts";
+import {createUser, login, validateToken} from "../services/authService.ts";
 
 export async function authRoutes(req: Request) {
     const url = new URL(req.url);
@@ -9,6 +9,10 @@ export async function authRoutes(req: Request) {
 
     if (req.method === "POST" && url.pathname === "/auth/login") {
         return login(req);
+    }
+
+    if (req.method === "POST" && url.pathname === "/auth/validate") {
+        return validateToken(req);
     }
 
     return null;

@@ -4,8 +4,8 @@ import {createTask, deleteAllTasks, deleteTask, getAllTasks, getTaskById, update
 export async function taskRoutes(req: Request) {
     const url = new URL (req.url)
     if (req.method === "GET" && url.pathname === "/tasks") {
-        const include_completed = url.pathname.split("/")[2] ?? "";
-        return await getAllTasks(req, Boolean(include_completed))
+        const include_completed = url.searchParams.get("include_completed") ?? 'false';
+        return await getAllTasks(req, (include_completed.toLowerCase() === 'true'))
     }
 
     if (req.method === "GET" && url.pathname.startsWith("/task/")) {
