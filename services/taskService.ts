@@ -3,15 +3,11 @@ import {requireAuth} from "../utils/auth.ts";
 import {ErrorResponse} from "../utils/errorResponse.ts";
 import {validateSingleTask, validateTaskBody} from "../utils/validateRequests.ts";
 
-export async function getAllTasks(req: Request, is_completed: boolean) {
-    const isCompleted: boolean = is_completed;
-    if (isCompleted === null || isCompleted === undefined) {
-        return ErrorResponse("Invalid json body", 400)
-    }
+export async function getAllTasks(req: Request) {
     try {
         const user = await requireAuth(req)
         const userId = user.userId
-        const tasks = await taskRepo.getAll(userId, isCompleted)
+        const tasks = await taskRepo.getAll(userId)
         return Response.json({data: tasks}, {status: 200})
     } catch (error: any) {
         return ErrorResponse(error.message || "Server error", error.status || 500)

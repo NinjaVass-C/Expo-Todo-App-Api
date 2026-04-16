@@ -40,7 +40,6 @@ export async function login(req: Request) {
     } catch {
         body = null;
     }
-    console.log("did we hit the api?")
     if (!body) {
         return ErrorResponse("Invalid json", 400);
     }
