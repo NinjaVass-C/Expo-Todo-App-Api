@@ -18,7 +18,7 @@ export async function createUser(req: Request) {
     }
     const errors = validateUserBody(body)
     if (errors.length) {
-        return ErrorResponse("Invalid username or password", 400)
+        return ErrorResponse("Invalid username or password", 401)
     }
     const username: string = body.username.trim()
     const exists = await userRepo.getOne(username)
